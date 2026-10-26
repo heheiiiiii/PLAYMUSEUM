@@ -13,7 +13,12 @@ export interface SavedItem {
   lens: ScriptKey;
   /** 저장할 때의 1순위 취향 */
   taste: TasteKey | null;
+  /** 나의 감상평 */
+  note?: string;
+  noteUpdatedAt?: string;
 }
+
+export const NOTE_MAX = 500;
 
 interface AppState {
   answers: Answers;
@@ -29,6 +34,8 @@ interface AppState {
   isSaved: (id: string) => boolean;
   toggleSaved: (id: string, lens: ScriptKey) => void;
   removeSaved: (id: string) => void;
+  /** 감상평을 저장한다. 아직 저장하지 않은 작품이면 함께 저장한다. 빈 글이면 감상평만 지운다. */
+  saveNote: (id: string, text: string, lens: ScriptKey) => void;
   /** 마지막 저장이 실패했으면 false (사생활 보호 모드 등) */
   storageOk: boolean;
   resetAll: () => void;
@@ -120,6 +127,24 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
 
   const removeSaved = useCallback((id: string) => updateSaved((prev) => prev.filter((s) => s.id !== id)), [updateSaved]);
 
+  const saveNote = useCallback(
+    (id: string, text: string, lens: ScriptKey) => {
+      const note = text.trim().slice(0, NOTE_MAX);
+      const now = new Date().toISOString();
+      updateSaved((prev) => {
+        const existing = prev.find((s) => s.id === id);
+        if (!existing) {
+          if (!note) return prev;
+          return [{ id, lens, taste: profile?.primary ?? null, savedAt: now, note, noteUpdatedAt: now }, ...prev];
+        }
+        return prev.map((s) =>
+          s.id === id ? { ...s, note: note || undefined, noteUpdatedAt: note ? now : undefined } : s,
+        );
+      });
+    },
+    [updateSaved, profile],
+  );
+
   const resetAll = useCallback(() => {
     clearAll();
     setAnswers({});
@@ -142,6 +167,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
     isSaved: (id) => saved.some((s) => s.id === id),
     toggleSaved,
     removeSaved,
+    saveNote,
     storageOk,
     resetAll,
   };

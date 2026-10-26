@@ -9,8 +9,9 @@ import { Artifacts } from './screens/Artifacts';
 import { Artifact } from './screens/Artifact';
 import { Records } from './screens/Records';
 import { NotFound } from './screens/NotFound';
+import { Lounge } from './screens/Lounge';
 
-type Section = 'home' | 'course' | 'artifacts' | 'records' | 'quiz';
+type Section = 'home' | 'course' | 'artifacts' | 'lounge' | 'records' | 'quiz';
 
 export function App() {
   const { parts, query } = useRoute();
@@ -46,6 +47,10 @@ export function App() {
       screen = second ? <Artifact id={second} query={query} /> : <NotFound />;
       section = query.get('course') ? 'course' : 'artifacts';
       break;
+    case 'lounge':
+      screen = <Lounge taste={second} />;
+      section = 'lounge';
+      break;
     case 'records':
       screen = <Records />;
       section = 'records';
@@ -58,6 +63,7 @@ export function App() {
     { key: 'home', to: '/', label: '홈' },
     { key: 'course', to: '/course', label: '코스' },
     { key: 'artifacts', to: '/artifacts', label: '유물' },
+    { key: 'lounge', to: '/lounge', label: '라운지' },
     { key: 'records', to: '/records', label: '기록' },
   ];
   const focusMode = section === 'quiz';

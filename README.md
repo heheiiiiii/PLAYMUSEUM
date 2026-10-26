@@ -1,4 +1,4 @@
-# PLAYMUSEUM 프로토타입 v0.1
+# PLAYMUSEUM 프로토타입 v0.2
 
 관람객의 취향에 따라 같은 유물을 다른 관점의 해설로 보여 주는 모바일 웹 프로토타입입니다.
 서버·로그인 없이 브라우저만으로 동작하며, 기록은 `localStorage`에 저장됩니다.
@@ -25,6 +25,14 @@ npm run preview      # 빌드 결과 확인 (http://localhost:4173)
 - 주소: https://heheiiiiii.github.io/PLAYMUSEUM/
 - 처음 한 번은 저장소 **Settings → Pages → Build and deployment → Source**를 **GitHub Actions**로 바꿔야 합니다.
 - 진행 상황은 저장소의 **Actions** 탭에서 볼 수 있습니다. 수동 실행은 Actions → Deploy to GitHub Pages → Run workflow.
+
+### Claude 아티팩트 (검토용)
+
+```bash
+npm run build:artifact   # dist-artifact/index.html 생성
+```
+
+`dist-artifact/index.html`을 Claude 아티팩트로 다시 올리면 같은 주소에서 바로 확인할 수 있습니다. 이미지·음원은 `dist-artifact/media.json` 목록의 파일을 함께 올립니다.
 
 ### 다른 정적 호스팅
 
@@ -54,16 +62,18 @@ src/
     Sound.tsx     사운드 재생 (한 번에 하나, 화면을 옮겨도 유지)
   screens/       화면 (Home, Quiz, Result, Course, Artifacts, Artifact, Records)
   components/    공통 컴포넌트 (이미지, 해설, 사운드 플레이어 등)
-  media/
-    images/      A01.jpg … (콘텐츠 JSON의 image.file 이름 그대로)
-    audio/       A01_loop.mp3, A01_base.mp3 … (sound.file, audio 이름 그대로)
   config.ts      관람 시간 선택지, 데모 사운드 사용 여부
+public/media/
+  images/        A01.jpg … (콘텐츠 JSON의 image.file 이름 그대로)
+  audio/         A01_loop.mp3, A01_base.mp3 … (sound.file, audio 이름 그대로)
 ```
+
+v0.2에서 추가: `src/data/communitySample.ts`(커뮤니티 예시 데이터), `src/logic/community.ts`(집계), `src/components/Character.tsx`(취향 캐릭터), `src/components/NoteEditor.tsx`(감상평), `src/screens/Lounge.tsx`(취향 라운지).
 
 ## 콘텐츠·미디어 교체 방법
 
 - **해설·코스·출처 수정**: `content/playmuseum_content.json`을 새 파일로 바꾸고 `npm run validate:content` → `npm run build`.
-- **이미지·음원 추가**: 파일을 `src/media/images`, `src/media/audio`에 JSON의 파일명 그대로 넣고 다시 빌드합니다.
+- **이미지·음원 추가**: 파일을 `public/media/images`, `public/media/audio`에 JSON의 파일명 그대로 넣고 다시 빌드합니다.
   빌드할 때 있는 파일만 잡히므로 코드 수정은 필요 없습니다. 파일이 없으면 자리표시자(이미지), 숨김(해설 음성), 데모 사운드(배경 사운드)로 대신합니다.
 - **취향 테스트 문항 수정**: `src/data/quiz.ts`. 선택지마다 `points: { mystery: 2 }`처럼 취향 키별 점수를 적습니다.
 

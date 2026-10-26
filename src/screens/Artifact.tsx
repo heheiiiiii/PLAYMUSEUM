@@ -16,6 +16,8 @@ import { useSound } from '../state/Sound';
 import { ArtifactImage } from '../components/ArtifactImage';
 import { NarrationButton, ScriptView } from '../components/ScriptView';
 import { SoundPlayer } from '../components/SoundPlayer';
+import { NoteEditor } from '../components/NoteEditor';
+import { ArtifactCommunity } from '../components/Community';
 import { floorRoom, formatSeconds, LabelLegend, OnViewNote } from '../components/ui';
 import { NotFound } from './NotFound';
 
@@ -28,7 +30,7 @@ export function Artifact({ id, query }: { id: string; query: URLSearchParams }) 
 }
 
 function ArtifactView({ artifact: a, query }: { artifact: ArtifactT; query: URLSearchParams }) {
-  const { profile, isSaved, toggleSaved, storageOk } = useApp();
+  const { profile, isSaved, toggleSaved, storageOk, saved: savedList } = useApp();
   const sound = useSound();
   const course = getCourse(query.get('course') ?? '');
   const queryLens = query.get('lens');
@@ -244,6 +246,16 @@ function ArtifactView({ artifact: a, query }: { artifact: ArtifactT; query: URLS
           </section>
 
           <SoundPlayer artifact={a} courseHint={course?.sound_default} />
+
+          <section className="my-note" aria-labelledby="note-title">
+            <h2 id="note-title" className="h-small">
+              나의 감상
+            </h2>
+            <NoteEditor artifactId={a.id} lens={depth === 'base' ? 'base' : lens} />
+            <p className="fineprint">감상평은 관람 기록에 작품과 함께 남아요. 이 브라우저에만 저장됩니다.</p>
+          </section>
+
+          <ArtifactCommunity artifactId={a.id} me={{ taste: profile?.primary ?? null, saved: savedList }} />
 
           <section className="sources" aria-labelledby="sources-title">
             <h2 id="sources-title" className="h-small">

@@ -6,9 +6,11 @@ import { href, navigate } from '../router';
 import { useApp } from '../state/AppState';
 import { formatMinutes } from '../components/ui';
 import { courseReasonText } from './courseText';
+import { Character } from '../components/Character';
+import { favoritesOf } from '../logic/community';
 
 export function Result() {
-  const { profile, recommended, minutes, resetAnswers } = useApp();
+  const { profile, recommended, minutes, resetAnswers, saved } = useApp();
 
   if (!profile) {
     return (
@@ -30,8 +32,15 @@ export function Result() {
 
   return (
     <main className="page narrow result">
-      <p className="eyebrow">나의 관람 취향</p>
-      <h1 className="display result-title">{primary.persona}</h1>
+      <header className="result-hero">
+        <Character taste={profile.primary} size={150} />
+        <div>
+              <h1 className="display result-title">{primary.persona}</h1>
+          <p className="speech">
+            {primary.character}: “{primary.greeting}”
+          </p>
+        </div>
+      </header>
       <p className="lede">{primary.fit}</p>
 
       <section className="why" aria-labelledby="why-title">
@@ -57,11 +66,34 @@ export function Result() {
 
       {secondary && (
         <section className="secondary-taste">
-          <p className="eyebrow">두 번째로 가까운 취향</p>
-          <h2>{secondary.persona}</h2>
-          <p>{secondary.fit}</p>
+          <Character taste={secondary.key} size={72} />
+          <div>
+            <p className="eyebrow">두 번째로 가까운 취향 · {secondary.character}</p>
+            <h2>{secondary.persona}</h2>
+            <p>{secondary.fit}</p>
+          </div>
         </section>
       )}
+
+      <section className="result-fav" aria-labelledby="result-fav-title">
+        <h2 id="result-fav-title" className="h-small">
+          {primary.persona}들이 많이 저장한 유물 <span className="sample-tag">예시</span>
+        </h2>
+        <ol>
+          {favoritesOf(profile.primary, content.artifacts, { taste: profile.primary, saved }).map((f) => (
+            <li key={f.artifact.id}>
+              <a href={href(`/artifact/${f.artifact.id}`)}>{f.artifact.name}</a>
+              <span className="meta">
+                {' '}
+                {f.total}명 중 {f.count}명
+              </span>
+            </li>
+          ))}
+        </ol>
+        <a className="btn-link" href={href(`/lounge/${profile.primary}`)}>
+          취향 라운지에서 감상평 보기
+        </a>
+      </section>
 
       <section className="howto" aria-labelledby="howto-title">
         <h2 id="howto-title" className="h-small">

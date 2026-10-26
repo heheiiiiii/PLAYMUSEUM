@@ -6,6 +6,10 @@ import type { SentenceLabel, TasteKey } from '../content';
 export interface TasteProfile {
   key: TasteKey;
   persona: string;
+  /** 캐릭터 이름 */
+  character: string;
+  /** 캐릭터가 건네는 한마디 */
+  greeting: string;
   /** 결과 화면 한 줄 설명 */
   fit: string;
   /** 추천 관람 방식 */
@@ -16,6 +20,8 @@ export const tasteProfiles: Record<TasteKey, TasteProfile> = {
   people: {
     key: 'people',
     persona: '뒷이야기 수집가',
+    character: '소곤',
+    greeting: '이 유물 곁에 누가 있었는지, 같이 들어 볼래요?',
     fit: '유물 곁에 있던 사람들, 그들의 관계와 갈등을 따라가며 보는 방식이 잘 맞을 수 있어요.',
     howTo: [
       '기본 해설을 들은 뒤 ‘인물·관계’ 해설로 넘어가 보세요.',
@@ -25,6 +31,8 @@ export const tasteProfiles: Record<TasteKey, TasteProfile> = {
   history: {
     key: 'history',
     persona: '시대 추적자',
+    character: '두루',
+    greeting: '이 유물이 지나온 시간을 연표처럼 펼쳐 봐요.',
     fit: '유물이 지나온 시대와 사건을 함께 놓고 보는 방식이 잘 맞을 수 있어요.',
     howTo: [
       '‘역사’ 해설에서 유물이 만들어진 때의 사회 분위기를 확인해 보세요.',
@@ -34,6 +42,8 @@ export const tasteProfiles: Record<TasteKey, TasteProfile> = {
   craft: {
     key: 'craft',
     persona: '미감 탐닉자',
+    character: '청이',
+    greeting: '가까이 와 봐요. 여기 이 선이 정말 예뻐요.',
     fit: '색과 형태, 재료와 만든 솜씨를 오래 들여다보는 방식이 잘 맞을 수 있어요.',
     howTo: [
       '‘미감·기술’ 해설이 알려 주는 부분을 실제 유물에서 찾아보세요.',
@@ -43,6 +53,8 @@ export const tasteProfiles: Record<TasteKey, TasteProfile> = {
   mystery: {
     key: 'mystery',
     persona: '미스터리 탐험가',
+    character: '아리',
+    greeting: '아직 아무도 답을 모르는 질문, 같이 찾아봐요.',
     fit: '숨겨진 의미와 아직 풀리지 않은 질문을 중심으로 감상하는 방식이 잘 맞을 수 있어요.',
     howTo: [
       '‘미스터리’ 해설은 학설이 갈리는 부분을 추정·해석 표시와 함께 보여 줘요.',
@@ -52,6 +64,8 @@ export const tasteProfiles: Record<TasteKey, TasteProfile> = {
   daily: {
     key: 'daily',
     persona: '생활 공감가',
+    character: '반이',
+    greeting: '그 시절 사람들도 우리처럼 웃고 혼나고 밥 먹었겠죠?',
     fit: '그 시절 사람들이 이 물건을 어떻게 쓰고 느꼈을지 떠올리며 보는 방식이 잘 맞을 수 있어요.',
     howTo: [
       '‘일상’ 해설에서 당시 사람들의 하루를 상상해 보세요.',
@@ -61,6 +75,8 @@ export const tasteProfiles: Record<TasteKey, TasteProfile> = {
   music: {
     key: 'music',
     persona: '감각 몰입가',
+    character: '가락',
+    greeting: '이어폰을 끼고, 천천히 분위기에 잠겨 봐요.',
     fit: '음악과 소리, 공간의 분위기와 함께 천천히 감상하는 방식이 잘 맞을 수 있어요.',
     howTo: [
       '이어폰을 끼고 유물마다 사운드를 켜 보세요. 한 번 켜면 다음 유물에서도 이어져요.',

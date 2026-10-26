@@ -2,6 +2,7 @@ import { content, getArtifact } from '../content';
 import { tasteProfiles } from '../data/tasteProfiles';
 import { href } from '../router';
 import { useApp } from '../state/AppState';
+import { Character } from '../components/Character';
 
 const SAMPLE_ID = 'A01';
 
@@ -37,7 +38,8 @@ export function Home() {
 
       {profile && (
         <section className="resume" aria-label="이어서 보기">
-          <div>
+          <Character taste={profile.primary} size={72} />
+          <div className="resume-text">
             <p className="eyebrow">지난번 결과</p>
             <p className="resume-taste">{tasteProfiles[profile.primary].persona}</p>
             <p className="meta">
@@ -55,6 +57,22 @@ export function Home() {
           </div>
         </section>
       )}
+
+      <section className="cast" aria-labelledby="cast-title">
+        <h2 id="cast-title">여섯 가지 관람 취향</h2>
+        <p className="meta">취향 테스트를 하면 나와 닮은 관람 친구를 알려 드려요.</p>
+        <ul className="cast-list">
+          {content.tastes.map((t) => (
+            <li key={t.key}>
+              <a href={href(`/lounge/${t.key}`)}>
+                <Character taste={t.key} size={84} decorative />
+                <strong>{tasteProfiles[t.key].character}</strong>
+                <span>{tasteProfiles[t.key].persona}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
 
       <section className="lens-preview" aria-labelledby="lens-preview-title">
         <div className="lens-preview-head">
