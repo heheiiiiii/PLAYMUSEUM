@@ -1,0 +1,359 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PLAYMUSEUM content",
+  "type": "object",
+  "required": [
+    "meta",
+    "labels",
+    "tastes",
+    "lenses",
+    "artifacts",
+    "courses",
+    "course_rule",
+    "sources"
+  ],
+  "$defs": {
+    "script": {
+      "type": "object",
+      "required": [
+        "text",
+        "chars",
+        "est_seconds",
+        "audio",
+        "sentences"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "text": {
+          "type": "string"
+        },
+        "chars": {
+          "type": "integer"
+        },
+        "est_seconds": {
+          "type": "integer"
+        },
+        "audio": {
+          "type": "string",
+          "pattern": "^A\\d{2}_(base|history|people|craft|mystery|daily)\\.mp3$"
+        },
+        "sentences": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "label",
+              "text"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^A\\d{2}\\.(base|history|people|craft|mystery|daily)\\.\\d+$"
+              },
+              "label": {
+                "enum": [
+                  "fact",
+                  "interpretation",
+                  "conjecture",
+                  "legend"
+                ]
+              },
+              "text": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "recId": {
+      "type": "string",
+      "pattern": "^A\\d{2}$"
+    },
+    "lensKey": {
+      "enum": [
+        "history",
+        "people",
+        "craft",
+        "mystery",
+        "daily"
+      ]
+    }
+  },
+  "properties": {
+    "meta": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "updated",
+        "counts"
+      ]
+    },
+    "labels": {
+      "type": "object",
+      "required": [
+        "fact",
+        "interpretation",
+        "conjecture",
+        "legend"
+      ],
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "name",
+          "voice_cue"
+        ]
+      }
+    },
+    "tastes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "key",
+          "label",
+          "maps_to"
+        ],
+        "properties": {
+          "maps_to": {
+            "type": "object",
+            "required": [
+              "lens"
+            ],
+            "properties": {
+              "lens": {
+                "$ref": "#/$defs/lensKey"
+              }
+            }
+          }
+        }
+      }
+    },
+    "lenses": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "key",
+          "name",
+          "question"
+        ],
+        "properties": {
+          "key": {
+            "$ref": "#/$defs/lensKey"
+          }
+        }
+      }
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "type",
+          "name",
+          "album",
+          "era",
+          "material",
+          "designation",
+          "location",
+          "on_view",
+          "strong_lenses",
+          "image",
+          "base",
+          "lenses",
+          "sound",
+          "sources"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "#/$defs/recId"
+          },
+          "type": {
+            "enum": [
+              "object",
+              "painting"
+            ]
+          },
+          "name": {
+            "type": "string"
+          },
+          "album": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "era": {
+            "type": "string"
+          },
+          "material": {
+            "type": "string"
+          },
+          "designation": {
+            "type": "string"
+          },
+          "location": {
+            "type": "object",
+            "required": [
+              "floor",
+              "room"
+            ],
+            "properties": {
+              "floor": {
+                "type": "integer"
+              },
+              "room": {
+                "type": "string"
+              }
+            }
+          },
+          "on_view": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "strong_lenses": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/lensKey"
+            }
+          },
+          "image": {
+            "type": "object",
+            "required": [
+              "file",
+              "credit",
+              "license"
+            ]
+          },
+          "base": {
+            "$ref": "#/$defs/script"
+          },
+          "lenses": {
+            "type": "object",
+            "required": [
+              "history",
+              "people",
+              "craft",
+              "mystery",
+              "daily"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "history": {
+                "$ref": "#/$defs/script"
+              },
+              "people": {
+                "$ref": "#/$defs/script"
+              },
+              "craft": {
+                "$ref": "#/$defs/script"
+              },
+              "mystery": {
+                "$ref": "#/$defs/script"
+              },
+              "daily": {
+                "$ref": "#/$defs/script"
+              }
+            }
+          },
+          "sound": {
+            "type": "object",
+            "required": [
+              "file",
+              "loop_sec",
+              "tag",
+              "mood",
+              "concept",
+              "materials",
+              "credit"
+            ]
+          },
+          "sources": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^S\\d{2}$"
+            }
+          }
+        }
+      }
+    },
+    "courses": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "lens",
+          "taste",
+          "sound_default",
+          "minutes",
+          "minutes_estimated",
+          "artifacts",
+          "notice"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^C\\d{2}$"
+          },
+          "lens": {
+            "oneOf": [
+              {
+                "$ref": "#/$defs/lensKey"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "artifacts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/recId"
+            }
+          }
+        }
+      }
+    },
+    "course_rule": {
+      "type": "object",
+      "required": [
+        "short_threshold_min",
+        "short_course",
+        "default_long_course",
+        "music_course",
+        "skip_when_on_view_false"
+      ]
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "url",
+          "checked"
+        ],
+        "properties": {
+          "checked": {
+            "enum": [
+              "full",
+              "summary"
+            ]
+          }
+        }
+      }
+    }
+  }
+}
