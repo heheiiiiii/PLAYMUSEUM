@@ -206,6 +206,9 @@ const looks: Record<TasteKey, Look> = {
   },
 };
 
+/** 캐릭터 몸 색 */
+export const characterTint = (taste: TasteKey) => looks[taste].body;
+
 const BODY = 'M47 24 H73 V31 C90 35 103 48 103 66 C103 88 85 105 60 105 C35 105 17 88 17 66 C17 48 30 35 47 31 Z';
 
 export function Character({ taste, size = 96, decorative = false }: { taste: TasteKey; size?: number; decorative?: boolean }) {

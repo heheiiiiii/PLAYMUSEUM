@@ -13,6 +13,7 @@ import { visibleStops } from '../logic/courses';
 import { href } from '../router';
 import { useApp } from '../state/AppState';
 import { useSound } from '../state/Sound';
+import { useActivity, useDwell } from '../state/Activity';
 import { ArtifactImage } from '../components/ArtifactImage';
 import { NarrationButton, ScriptView } from '../components/ScriptView';
 import { SoundPlayer } from '../components/SoundPlayer';
@@ -64,6 +65,10 @@ function ArtifactView({ artifact: a, query }: { artifact: ArtifactT; query: URLS
   const qs = course && inList ? `?course=${course.id}` : '';
 
   const script = depth === 'base' ? a.base : a.lenses[lens];
+  const scriptKey = depth === 'base' ? 'base' : lens;
+  useDwell(a.id, scriptKey);
+  const { quotes } = useActivity();
+  const quotedHere = quotes.filter((q) => q.artifactId === a.id).length;
   const lensInfo = content.lenses.find((l) => l.key === lens)!;
   const saved = isSaved(a.id);
 
@@ -99,7 +104,7 @@ function ArtifactView({ artifact: a, query }: { artifact: ArtifactT; query: URLS
   };
 
   const onSave = () => {
-    toggleSaved(a.id, depth === 'base' ? 'base' : lens);
+    toggleSaved(a.id, scriptKey);
     setJustSaved(saved ? 'removed' : 'saved');
   };
 
@@ -226,7 +231,16 @@ function ArtifactView({ artifact: a, query }: { artifact: ArtifactT; query: URLS
               {depth === 'deep' && a.strong_lenses.includes(lens) && (
                 <p className="meta">이 유물은 ‘{lensInfo.name}’ 이야기가 특히 풍부해요.</p>
               )}
-              <ScriptView script={script} />
+              <p className="collect-hint" aria-live="polite">
+                문장을 누르면 인상 깊은 문장으로 모아요
+                {quotedHere > 0 && (
+                  <>
+                    {' '}
+                    · 이 작품에서 {quotedHere}개 · <a href={href('/report')}>리포트에서 보기</a>
+                  </>
+                )}
+              </p>
+              <ScriptView script={script} collect={{ artifactId: a.id, lens: scriptKey }} />
               <div className="script-foot">
                 <span className="meta">읽는 데 {formatSeconds(script.est_seconds)}</span>
                 <NarrationButton file={script.audio} />
@@ -251,7 +265,7 @@ function ArtifactView({ artifact: a, query }: { artifact: ArtifactT; query: URLS
             <h2 id="note-title" className="h-small">
               나의 감상
             </h2>
-            <NoteEditor artifactId={a.id} lens={depth === 'base' ? 'base' : lens} />
+            <NoteEditor artifactId={a.id} lens={scriptKey} />
             <p className="fineprint">감상평은 관람 기록에 작품과 함께 남아요. 이 브라우저에만 저장됩니다.</p>
           </section>
 
@@ -297,9 +311,9 @@ function ArtifactView({ artifact: a, query }: { artifact: ArtifactT; query: URLS
             {next.name}
           </a>
         ) : course ? (
-          <a className="pager-link is-next" href={href('/records')}>
+          <a className="pager-link is-next" href={href('/report')}>
             <small>코스 끝</small>
-            관람 기록 보기
+            나의 관람 리포트 보기
           </a>
         ) : (
           <span />

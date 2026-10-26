@@ -1,4 +1,4 @@
-# PLAYMUSEUM 프로토타입 v0.2
+# PLAYMUSEUM 프로토타입 v0.3
 
 관람객의 취향에 따라 같은 유물을 다른 관점의 해설로 보여 주는 모바일 웹 프로토타입입니다.
 서버·로그인 없이 브라우저만으로 동작하며, 기록은 `localStorage`에 저장됩니다.
@@ -67,6 +67,8 @@ public/media/
   images/        A01.jpg … (콘텐츠 JSON의 image.file 이름 그대로)
   audio/         A01_loop.mp3, A01_base.mp3 … (sound.file, audio 이름 그대로)
 ```
+
+v0.3에서 추가: `src/components/HomeDemo.tsx`(홈 체험 데모), `src/state/Activity.tsx`(관점별 시간·모은 문장), `src/logic/report.ts`(테스트와 실제 관람 비교), `src/logic/shareCard.ts`(공유 카드 그리기), `src/screens/Report.tsx`(관람 리포트).
 
 v0.2에서 추가: `src/data/communitySample.ts`(커뮤니티 예시 데이터), `src/logic/community.ts`(집계), `src/components/Character.tsx`(취향 캐릭터), `src/components/NoteEditor.tsx`(감상평), `src/screens/Lounge.tsx`(취향 라운지).
 

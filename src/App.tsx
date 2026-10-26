@@ -10,6 +10,7 @@ import { Artifact } from './screens/Artifact';
 import { Records } from './screens/Records';
 import { NotFound } from './screens/NotFound';
 import { Lounge } from './screens/Lounge';
+import { Report } from './screens/Report';
 
 type Section = 'home' | 'course' | 'artifacts' | 'lounge' | 'records' | 'quiz';
 
@@ -50,6 +51,10 @@ export function App() {
     case 'lounge':
       screen = <Lounge taste={second} />;
       section = 'lounge';
+      break;
+    case 'report':
+      screen = <Report />;
+      section = 'records';
       break;
     case 'records':
       screen = <Records />;

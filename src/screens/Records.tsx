@@ -38,6 +38,14 @@ export function Records() {
         </div>
       </header>
 
+      <a className="report-link" href={href('/report')}>
+        <span>
+          <strong>나의 관람 리포트</strong>
+          <span className="meta">실제로 오래 본 관점, 모은 문장, 공유 카드</span>
+        </span>
+        <span aria-hidden="true">→</span>
+      </a>
+
       {items.length === 0 ? (
         <section className="empty">
           <h2>아직 저장한 작품이 없어요</h2>

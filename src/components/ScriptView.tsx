@@ -1,24 +1,65 @@
 import { Fragment, useEffect, useRef, useState } from 'react';
-import type { Script } from '../content';
+import type { Script, ScriptKey, Sentence } from '../content';
+import { useActivity } from '../state/Activity';
 import { audioUrl } from '../media';
 import { useSound } from '../state/Sound';
 import { LabelChip } from './ui';
 
 // 해설 원고를 문장 단위로 렌더링한다. fact 가 아닌 문장 뒤에는 라벨 칩을 붙인다.
-export function ScriptView({ script }: { script: Script }) {
+// collect 를 넘기면 문장을 눌러 ‘인상 깊은 문장’으로 모을 수 있다.
+export function ScriptView({
+  script,
+  limit,
+  collect,
+}: {
+  script: Script;
+  /** 앞에서부터 이 개수만 보여 준다 */
+  limit?: number;
+  collect?: { artifactId: string; lens: ScriptKey };
+}) {
+  const sentences = limit ? script.sentences.slice(0, limit) : script.sentences;
   return (
-    <div className="script">
+    <div className={`script ${collect ? 'is-collectible' : ''}`}>
       <p>
-        {script.sentences.map((s) => (
+        {sentences.map((s) => (
           <Fragment key={s.id}>
-            <span className={`sentence s-${s.label}`} data-sentence={s.id}>
-              {s.text}
-            </span>
+            {collect ? (
+              <CollectibleSentence sentence={s} artifactId={collect.artifactId} lens={collect.lens} />
+            ) : (
+              <span className={`sentence s-${s.label}`} data-sentence={s.id}>
+                {s.text}
+              </span>
+            )}
             {s.label !== 'fact' && <LabelChip label={s.label} />}{' '}
           </Fragment>
         ))}
       </p>
     </div>
+  );
+}
+
+function CollectibleSentence({ sentence: s, artifactId, lens }: { sentence: Sentence; artifactId: string; lens: ScriptKey }) {
+  const { isQuoted, toggleQuote } = useActivity();
+  const on = isQuoted(s.id);
+  const toggle = () => toggleQuote(s.id, artifactId, lens);
+  return (
+    <span
+      role="button"
+      tabIndex={0}
+      aria-pressed={on}
+      title={on ? '모은 문장에서 빼기' : '인상 깊은 문장으로 모으기'}
+      className={`sentence s-${s.label} ${on ? 'is-quoted' : ''}`}
+      data-sentence={s.id}
+      onClick={toggle}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          toggle();
+        }
+      }}
+    >
+      {s.text}
+    </span>
   );
 }
 
