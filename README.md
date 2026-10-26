@@ -18,6 +18,16 @@ npm run preview      # 빌드 결과 확인 (http://localhost:4173)
 
 ## 배포
 
+### GitHub Pages (설정됨)
+
+`main` 브랜치에 푸시하면 `.github/workflows/deploy.yml`이 콘텐츠 검사 → 테스트 → 빌드 → 배포를 자동으로 실행합니다.
+
+- 주소: https://heheiiiiii.github.io/PLAYMUSEUM/
+- 처음 한 번은 저장소 **Settings → Pages → Build and deployment → Source**를 **GitHub Actions**로 바꿔야 합니다.
+- 진행 상황은 저장소의 **Actions** 탭에서 볼 수 있습니다. 수동 실행은 Actions → Deploy to GitHub Pages → Run workflow.
+
+### 다른 정적 호스팅
+
 `npm run build` 후 생성되는 `dist/` 폴더를 정적 호스팅(Netlify, Vercel, GitHub Pages, S3 등)에 올리면 됩니다.
 
 - 경로는 모두 상대 경로(`base: './'`)라 하위 경로에 올려도 동작합니다.
