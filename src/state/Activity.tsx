@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
-import { content, type ScriptKey } from '../content';
-import { readJSON, writeJSON } from '../logic/storage';
+import { content, venue, type ScriptKey } from '../content';
+import { readJSON, readScoped, writeJSON, writeScoped } from '../logic/storage';
 
 // 관람 행동 기록: 해설 관점별로 머문 시간, 둘러본 유물, 모은 문장.
 // 모두 이 브라우저에만 저장되며 관람 리포트와 공유 카드에 쓰인다.
@@ -42,9 +42,10 @@ const knownArtifact = (id: string) => content.artifacts.some((a) => a.id === id)
 const FLUSH_MS = 5000;
 
 export function ActivityProvider({ children }: { children: ReactNode }) {
+  const [venueId] = useState(venue.id);
   const [lensSeconds, setLensSeconds] = useState<LensSeconds>(() => readJSON('lensSeconds', {}, isSeconds));
-  const [viewed, setViewed] = useState<string[]>(() => readJSON('viewed', [], isIdList).filter(knownArtifact));
-  const [quotes, setQuotes] = useState<Quote[]>(() => readJSON('quotes', [], isQuotes).filter((q) => knownArtifact(q.artifactId)));
+  const [viewed, setViewed] = useState<string[]>(() => readScoped('viewed', venueId, [], isIdList).filter(knownArtifact));
+  const [quotes, setQuotes] = useState<Quote[]>(() => readScoped('quotes', venueId, [], isQuotes).filter((q) => knownArtifact(q.artifactId)));
 
   const pending = useRef<LensSeconds>({});
 
@@ -64,7 +65,7 @@ export function ActivityProvider({ children }: { children: ReactNode }) {
     setViewed((prev) => {
       if (prev.includes(artifactId)) return prev;
       const next = [...prev, artifactId];
-      writeJSON('viewed', next);
+      writeScoped('viewed', venueId, next);
       return next;
     });
   }, []);
@@ -79,7 +80,7 @@ export function ActivityProvider({ children }: { children: ReactNode }) {
       const exists = prev.some((q) => q.id === id);
       added = !exists;
       const next = exists ? prev.filter((q) => q.id !== id) : [{ id, artifactId, lens, savedAt: new Date().toISOString() }, ...prev];
-      writeJSON('quotes', next);
+      writeScoped('quotes', venueId, next);
       return next;
     });
     return added;
@@ -88,7 +89,7 @@ export function ActivityProvider({ children }: { children: ReactNode }) {
   const removeQuote = useCallback((id: string) => {
     setQuotes((prev) => {
       const next = prev.filter((q) => q.id !== id);
-      writeJSON('quotes', next);
+      writeScoped('quotes', venueId, next);
       return next;
     });
   }, []);

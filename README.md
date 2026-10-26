@@ -1,4 +1,4 @@
-# PLAYMUSEUM 프로토타입 v0.3
+# PLAYMUSEUM 프로토타입 v0.4
 
 관람객의 취향에 따라 같은 유물을 다른 관점의 해설로 보여 주는 모바일 웹 프로토타입입니다.
 서버·로그인 없이 브라우저만으로 동작하며, 기록은 `localStorage`에 저장됩니다.
@@ -72,9 +72,15 @@ v0.3에서 추가: `src/components/HomeDemo.tsx`(홈 체험 데모), `src/state/
 
 v0.2에서 추가: `src/data/communitySample.ts`(커뮤니티 예시 데이터), `src/logic/community.ts`(집계), `src/components/Character.tsx`(취향 캐릭터), `src/components/NoteEditor.tsx`(감상평), `src/screens/Lounge.tsx`(취향 라운지).
 
+## 박물관·미술관 추가하기
+
+1. `content/venues.json`에 항목을 넣습니다(`id`, `name`, `kind`: museum|art, `city`, `status`).
+2. `content/venues/<id>/playmuseum_content.json`에 국립중앙박물관 팩과 같은 형식으로 콘텐츠를 넣고 `status`를 `open`으로 바꿉니다.
+3. `npm run validate:content`로 검사한 뒤 빌드합니다. 라운지 예시 데이터는 `src/data/communitySample.ts`의 `communityByVenue`에 관람지 id로 추가합니다(없으면 빈 라운지로 시작).
+
 ## 콘텐츠·미디어 교체 방법
 
-- **해설·코스·출처 수정**: `content/playmuseum_content.json`을 새 파일로 바꾸고 `npm run validate:content` → `npm run build`.
+- **해설·코스·출처 수정**: `content/venues/<id>/playmuseum_content.json`을 새 파일로 바꾸고 `npm run validate:content` → `npm run build`.
 - **이미지·음원 추가**: 파일을 `public/media/images`, `public/media/audio`에 JSON의 파일명 그대로 넣고 다시 빌드합니다.
   빌드할 때 있는 파일만 잡히므로 코드 수정은 필요 없습니다. 파일이 없으면 자리표시자(이미지), 숨김(해설 음성), 데모 사운드(배경 사운드)로 대신합니다.
 - **취향 테스트 문항 수정**: `src/data/quiz.ts`. 선택지마다 `points: { mystery: 2 }`처럼 취향 키별 점수를 적습니다.

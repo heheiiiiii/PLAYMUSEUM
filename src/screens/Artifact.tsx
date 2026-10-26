@@ -7,6 +7,7 @@ import {
   lensName,
   type Artifact as ArtifactT,
   type LensKey,
+  venue,
 } from '../content';
 import { tasteProfiles } from '../data/tasteProfiles';
 import { visibleStops } from '../logic/courses';
@@ -149,7 +150,9 @@ function ArtifactView({ artifact: a, query }: { artifact: ArtifactT; query: URLS
             </div>
             <div>
               <dt>위치</dt>
-              <dd>국립중앙박물관 {floorRoom(a)}</dd>
+              <dd>
+                {venue.name} {floorRoom(a)}
+              </dd>
             </div>
           </dl>
           <div className="save-row">

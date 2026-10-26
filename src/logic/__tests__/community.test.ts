@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import { content } from '../../content';
-import { sampleReviews, sampleSaves, sampleVisitors } from '../../data/communitySample';
-import { favoritesOf, reviewsOf, savesOf, visitorsOf } from '../community';
+import { communityByVenue } from '../../data/communitySample';
+
+const { reviews: sampleReviews, saves: sampleSaves, visitors: sampleVisitors, comments } = communityByVenue.nmk;
+import { feed, favoritesOf, reviewsOf, savesOf, visitorsOf } from '../community';
 
 const saved = (id: string, note?: string) => ({ id, lens: 'base' as const, taste: 'craft' as const, savedAt: '2026-10-26T00:00:00Z', note });
 
@@ -16,6 +18,8 @@ describe('community sample data', () => {
       }
     }
     for (const r of sampleReviews) expect(ids.has(r.artifactId)).toBe(true);
+    const postIds = new Set(sampleReviews.map((r) => r.id));
+    for (const c of comments) expect(postIds.has(c.postId)).toBe(true);
   });
 });
 
@@ -38,5 +42,15 @@ describe('community counts', () => {
     const list = reviewsOf('A05', me);
     expect(list[0]).toMatchObject({ mine: true, text: '편안한 비대칭' });
     expect(list.slice(1).every((r) => !r.mine)).toBe(true);
+  });
+});
+
+describe('feed', () => {
+  it('puts my posts first and filters by taste', () => {
+    const me = { taste: 'craft' as const, saved: [saved('A05', '편안한 비대칭')] };
+    const all = feed(me);
+    expect(all[0]).toMatchObject({ mine: true, artifactId: 'A05' });
+    expect(all).toHaveLength(sampleReviews.length + 1);
+    expect(feed(me, 'music').every((p) => p.taste === 'music')).toBe(true);
   });
 });

@@ -11,6 +11,8 @@ import { Records } from './screens/Records';
 import { NotFound } from './screens/NotFound';
 import { Lounge } from './screens/Lounge';
 import { Report } from './screens/Report';
+import { Venues } from './screens/Venues';
+import { venue } from './content';
 
 type Section = 'home' | 'course' | 'artifacts' | 'lounge' | 'records' | 'quiz';
 
@@ -51,6 +53,9 @@ export function App() {
     case 'lounge':
       screen = <Lounge taste={second} />;
       section = 'lounge';
+      break;
+    case 'venues':
+      screen = <Venues />;
       break;
     case 'report':
       screen = <Report />;
@@ -93,6 +98,10 @@ export function App() {
               觀
             </span>
             PLAYMUSEUM
+          </a>
+          <a className="venue-chip" href={href('/venues')} aria-label={`관람지: ${venue.name}. 바꾸기`}>
+            <span>{venue.name}</span>
+            <span aria-hidden="true" className="chev" />
           </a>
           {!focusMode && (
             <nav className="nav" aria-label="주요 메뉴">

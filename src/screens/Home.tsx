@@ -1,4 +1,4 @@
-import { content } from '../content';
+import { venue } from '../content';
 import { tasteProfiles } from '../data/tasteProfiles';
 import { href } from '../router';
 import { useApp } from '../state/AppState';
@@ -12,7 +12,10 @@ export function Home() {
     <main className="page home">
       <div className="home-top">
         <section className="hero">
-          <p className="eyebrow">{content.meta.exhibition}</p>
+          <p className="eyebrow home-venue">
+            <span>{venue.name}</span>
+            <a href={href('/venues')}>다른 박물관·미술관</a>
+          </p>
           <h1 className="display">
             같은 유물도,
             <br />

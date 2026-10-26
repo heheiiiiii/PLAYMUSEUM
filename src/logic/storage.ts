@@ -35,3 +35,23 @@ export function clearAll() {
     /* 저장소를 쓸 수 없으면 지울 것도 없다 */
   }
 }
+
+// 관람지마다 따로 두는 기록(저장한 작품, 모은 문장 등)은 `<key>@<관람지 id>` 로 저장한다.
+// 여러 관람지를 지원하기 전의 기록(접미사 없음)은 첫 관람지(국립중앙박물관) 것으로 읽는다.
+const LEGACY_VENUE = 'nmk';
+
+function hasKey(key: string) {
+  try {
+    return window.localStorage.getItem(PREFIX + key) != null;
+  } catch {
+    return false;
+  }
+}
+
+export function readScoped<T>(key: string, venueId: string, fallback: T, isValid: (v: unknown) => v is T): T {
+  const scoped = `${key}@${venueId}`;
+  if (hasKey(scoped)) return readJSON(scoped, fallback, isValid);
+  return venueId === LEGACY_VENUE ? readJSON(key, fallback, isValid) : fallback;
+}
+
+export const writeScoped = (key: string, venueId: string, value: unknown) => writeJSON(`${key}@${venueId}`, value);

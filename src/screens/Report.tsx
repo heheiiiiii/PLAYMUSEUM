@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { content, getArtifact, lensName, type LensKey, type ScriptKey, type TasteKey } from '../content';
+import { content, getArtifact, lensName, venue, type LensKey, type ScriptKey, type TasteKey } from '../content';
 import { tasteProfiles } from '../data/tasteProfiles';
 import { buildInsight, formatDuration, lensShares, tasteOfLens, type Insight } from '../logic/report';
 import { canvasToBlob, drawShareCard, type CardData } from '../logic/shareCard';
@@ -71,7 +71,7 @@ export function Report() {
       <header className="report-head">
         {taste && <Character taste={taste} size={112} />}
         <div>
-          <p className="eyebrow">나의 관람 리포트</p>
+          <p className="eyebrow">나의 관람 리포트 · {venue.name}</p>
           <h1 className="display">{p ? p.persona : '나의 관람'}</h1>
           {!profile && taste && <p className="meta">취향 테스트 전이라, 가장 오래 본 해설로 정했어요.</p>}
         </div>
@@ -268,6 +268,7 @@ function ShareCard({
       quote,
       stats,
       date,
+      venue: venue.name,
       url: SITE,
     };
     setReady(false);

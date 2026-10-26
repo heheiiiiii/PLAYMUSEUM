@@ -1,10 +1,10 @@
 import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from 'react';
-import { content, type ScriptKey, type TasteKey } from '../content';
+import { content, venue, type ScriptKey, type TasteKey } from '../content';
 import { quiz } from '../data/quiz';
 import { DEFAULT_MINUTES } from '../config';
 import { buildProfile, type Answers, type Profile } from '../logic/scoring';
 import { pickCourse, type CoursePick } from '../logic/courses';
-import { clearAll, readJSON, writeJSON } from '../logic/storage';
+import { clearAll, readJSON, readScoped, writeJSON, writeScoped } from '../logic/storage';
 
 export interface SavedItem {
   id: string;
@@ -51,18 +51,24 @@ const isSavedList = (v: unknown): v is SavedItem[] =>
   Array.isArray(v) && v.every((x) => x && typeof x.id === 'string' && typeof x.savedAt === 'string');
 
 export function AppStateProvider({ children }: { children: ReactNode }) {
+  // 관람지를 바꾸면 provider 가 새로 만들어지므로 처음 값으로 고정해도 된다
+  const [venueId] = useState(venue.id);
   const [answers, setAnswers] = useState<Answers>(() => readJSON('answers', {}, isRecord));
   const [minutes, setMinutesState] = useState<number>(() => readJSON('minutes', DEFAULT_MINUTES, isNumber));
   const [chosenCourseId, setChosen] = useState<string | null>(() => {
-    const id = readJSON('course', null, isStringOrNull);
+    const id = readScoped('course', venueId, null, isStringOrNull);
     return id && content.courses.some((c) => c.id === id) ? id : null;
   });
   const [saved, setSaved] = useState<SavedItem[]>(() =>
-    readJSON('saved', [], isSavedList).filter((s) => content.artifacts.some((a) => a.id === s.id)),
+    readScoped('saved', venueId, [], isSavedList).filter((s) => content.artifacts.some((a) => a.id === s.id)),
   );
   const [storageOk, setStorageOk] = useState(true);
 
   const persist = useCallback((key: string, value: unknown) => setStorageOk(writeJSON(key, value)), []);
+  const persistHere = useCallback(
+    (key: string, value: unknown) => setStorageOk(writeScoped(key, venueId, value)),
+    [venueId],
+  );
 
   const setAnswer = useCallback(
     (qid: string, oid: string) =>
@@ -78,7 +84,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
     setAnswers({});
     setChosen(null);
     persist('answers', {});
-    persist('course', null);
+    persistHere('course', null);
   }, [persist]);
 
   const setMinutes = useCallback(
@@ -86,7 +92,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
       setMinutesState(m);
       setChosen(null);
       persist('minutes', m);
-      persist('course', null);
+      persistHere('course', null);
     },
     [persist],
   );
@@ -94,7 +100,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
   const chooseCourse = useCallback(
     (id: string | null) => {
       setChosen(id);
-      persist('course', id);
+      persistHere('course', id);
     },
     [persist],
   );
@@ -109,10 +115,10 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
     (fn: (prev: SavedItem[]) => SavedItem[]) =>
       setSaved((prev) => {
         const next = fn(prev);
-        persist('saved', next);
+        persistHere('saved', next);
         return next;
       }),
-    [persist],
+    [persistHere],
   );
 
   const toggleSaved = useCallback(

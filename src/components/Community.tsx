@@ -1,6 +1,6 @@
-import { content, getArtifact, lensName, type TasteKey } from '../content';
+import { content, getArtifact, lensName } from '../content';
 import { tasteProfiles } from '../data/tasteProfiles';
-import { reviewsOf, tastesOf, type Me, type Review } from '../logic/community';
+import { reviewsOf, tastesOf, type Me, type Post } from '../logic/community';
 import { href } from '../router';
 import { Character } from './Character';
 
@@ -13,7 +13,7 @@ export function SampleNotice() {
   );
 }
 
-export function ReviewList({ reviews, showArtifact = false }: { reviews: Review[]; showArtifact?: boolean }) {
+export function ReviewList({ reviews, showArtifact = false }: { reviews: Post[]; showArtifact?: boolean }) {
   if (reviews.length === 0) return <p className="meta">아직 감상평이 없어요.</p>;
   return (
     <ul className="reviews">
@@ -80,30 +80,5 @@ export function ArtifactCommunity({ artifactId, me }: { artifactId: string; me: 
       <p className="meta">저장한 관람객 {total}명 기준</p>
       <ReviewList reviews={reviews} />
     </section>
-  );
-}
-
-/** 취향 고르기 (캐릭터 줄) */
-export function TastePicker({ value, onChange, mine }: { value: TasteKey; onChange: (t: TasteKey) => void; mine: TasteKey | null }) {
-  return (
-    <div className="taste-picker" role="radiogroup" aria-label="취향 고르기">
-      {content.tastes.map((t) => {
-        const p = tasteProfiles[t.key];
-        return (
-          <button
-            key={t.key}
-            type="button"
-            role="radio"
-            aria-checked={value === t.key}
-            className={value === t.key ? 'is-on' : ''}
-            onClick={() => onChange(t.key)}
-          >
-            <Character taste={t.key} size={56} decorative />
-            <span>{p.character}</span>
-            {mine === t.key && <small>나</small>}
-          </button>
-        );
-      })}
-    </div>
   );
 }

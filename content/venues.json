@@ -1,0 +1,10 @@
+{
+  "note": "관람지 목록. status 가 open 이면 content/venues/<id>/playmuseum_content.json 이 있어야 한다. soon 은 목록에만 보이고 선택할 수 없다.",
+  "venues": [
+    { "id": "nmk", "name": "국립중앙박물관", "kind": "museum", "city": "서울 용산", "status": "open", "blurb": "상설전시관 유물과 서화실 김홍도 그림" },
+    { "id": "gyeongju", "name": "국립경주박물관", "kind": "museum", "city": "경북 경주", "status": "soon", "blurb": "" },
+    { "id": "folk", "name": "국립민속박물관", "kind": "museum", "city": "서울 종로", "status": "soon", "blurb": "" },
+    { "id": "mmca", "name": "국립현대미술관 서울", "kind": "art", "city": "서울 종로", "status": "soon", "blurb": "" },
+    { "id": "sema", "name": "서울시립미술관", "kind": "art", "city": "서울 중구", "status": "soon", "blurb": "" }
+  ]
+}

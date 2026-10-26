@@ -16,6 +16,8 @@ export interface CardData {
   quote: { text: string; source: string } | null;
   stats: { label: string; value: number }[];
   date: string;
+  /** 관람지 이름 */
+  venue: string;
   url: string;
 }
 
@@ -121,7 +123,8 @@ export async function drawShareCard(canvas: HTMLCanvasElement, d: CardData): Pro
   ctx.textAlign = 'right';
   ctx.fillStyle = C.soft;
   ctx.font = `400 26px ${SANS}`;
-  ctx.fillText(d.date, CARD_W - M, 130);
+  ctx.fillText(d.date, CARD_W - M, 116);
+  ctx.fillText(d.venue, CARD_W - M, 152);
   ctx.textAlign = 'left';
   ctx.textBaseline = 'alphabetic';
 

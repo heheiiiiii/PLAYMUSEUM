@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { content, getArtifact, getTaste, lensName, type TasteKey } from '../content';
+import { content, getArtifact, getTaste, lensName, venue, type TasteKey } from '../content';
 import { tasteProfiles } from '../data/tasteProfiles';
 import { href } from '../router';
 import { ArtifactImage } from './ArtifactImage';
@@ -7,10 +7,12 @@ import { Character } from './Character';
 import { ScriptView } from './ScriptView';
 
 // 홈 첫 화면의 체험 데모: 캐릭터를 고르면 같은 유물의 해설이 그 자리에서 바뀐다.
-const DEMO_IDS = ['A02', 'A01', 'A05'];
+// 관람지마다 보여 줄 작품을 고를 수 있고, 없으면 그 관람지의 앞 세 작품을 쓴다.
+const DEMO_IDS: Record<string, string[]> = { nmk: ['A02', 'A01', 'A05'] };
 
 export function HomeDemo({ initial }: { initial: TasteKey | null }) {
-  const demo = DEMO_IDS.map(getArtifact).filter((a) => !!a);
+  const picked = (DEMO_IDS[venue.id] ?? []).map(getArtifact).filter((a) => !!a);
+  const demo = picked.length ? picked : content.artifacts.slice(0, 3);
   const [index, setIndex] = useState(0);
   const [taste, setTaste] = useState<TasteKey>(initial ?? 'people');
   const a = demo[index % demo.length]!;
